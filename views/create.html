@@ -1,0 +1,23 @@
+<form>
+    <h2>Create group</h2>
+    <label>Имя группы</label>
+    <div class='input-field'>
+        <input type='text' name='name' value={{name}}>
+    </div>
+    <label>Почта для добавления</label>
+    <div class='input-field'>
+        <input type='text' name='mail'>
+    </div>
+    {{#if Mails.length}}
+    <ul>
+        {{#each Mails}}
+        <li class='todo'>
+            <label>{{this}}</label>
+        </li>
+        {{/each}}
+    </ul>
+    {{/if}}
+    <button type='submit' formmethod="POST" formaction="/addInGroup" class='btn'>Add</button>
+    <button type='submit' formmethod="POST" formaction="/saveGroup" class='btn'>Create</button>
+    
+</form>
