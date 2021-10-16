@@ -5,7 +5,7 @@ const bCrypt = require('bcrypt')
 const User = require('../models/User')
 const enter = require('../modules/enter')
 const enterMiddle = require('../middleware/enter')
-
+const Category = require('../models/Category')
 
 router.get('/', enterMiddle, async (req, res) => {
     const { cookies } = req
@@ -37,6 +37,21 @@ router.get('/EnterInAccount', ((req, res) => {
 
 
 router.post('/enter', enter.logIn)
+
+router.post('/createGroup', (async (req,res)=>{
+    const category = new Category({
+        name: req.body.name,
+        Id:req.body.id,
+        parentId: req.body.parentId
+    })
+    await category.save()
+    res.redirect('/')
+}))
+router.get('/createGroup', ((req, res) => {
+    res.render('createGroup', {
+        title: "create group page",
+    })
+}))
 router.get('/registration', ((req, res) => {
     res.render('registration', {
         title: "registration page",
@@ -48,7 +63,8 @@ router.post('/registration', (async (req, res) => {
     const user = new User({
         password: hashPassword,
         name: req.body.name,
-        mail: req.body.mail
+        mail: req.body.mail,
+        isAdmin : !!req.body.isAdmin
     })
 
 
