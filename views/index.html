@@ -9,6 +9,18 @@
 <body>
     <a href="/createGroup">группа</a>
     <a href="/create">товар</a>
-    
+    {{#each products}}
+    <li class='todo'>
+        <form>
+            <label>
+                <a>{{name}}</a>
+                <a>{{price}}</a>
+                <a>{{description}}</a>
+                <button type='submit' formmethod="POST" formaction="/openProduct" class='btn'>open product</button>
+                <input type="hidden" value="{{_id}}" name="idOfProduct">
+            </label>
+        </form>
+    </li>
+    {{/each}}
 </body>
 </html>

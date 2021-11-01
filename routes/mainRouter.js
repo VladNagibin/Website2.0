@@ -10,10 +10,12 @@ const Product = require('../models/Product')
 
 router.get('/', enterMiddle, async (req, res) => {
     const { cookies } = req
+    products = await Product.find().lean()
     if ('UserName' in cookies) {
         res.render('index', {
             title: "main page",
             Username: cookies.UserName,
+            products
           
         })
     }
@@ -21,7 +23,7 @@ router.get('/', enterMiddle, async (req, res) => {
         res.render('index', {
             title: "main page",
             Username: 'Not found',
-          
+            products
         })
     }
 
@@ -51,15 +53,15 @@ router.post('/createGroup', (async (req,res)=>{
 router.post('/create', (async (req,res)=>{
     const product = new Product({
         name: req.body.name,
-        available:req.body.available,
+        available:true,
         price: req.body.price,
         categoryId: req.body.categoryId,
         description: req.body.description,
         barcode: req.body.barcode,
-        store: req.body.store,
-        pickup: req.body.pickup,
-        delivery: req.body.delivery,
-        manufacturer_warranty: req.body.manufacturer_warranty,
+        store: true,
+        pickup: true,
+        delivery: true,
+        manufacturer_warranty: true,
         min_quantity: req.body.min_quantity,
 
     })
