@@ -1,23 +1,52 @@
 <form>
     <h2>Create group</h2>
-    <label>Имя группы</label>
+    <label>Имя </label>
     <div class='input-field'>
-        <input type='text' name='name' value={{name}}>
+        <input type='text' name='name'>
     </div>
-    <label>Почта для добавления</label>
+    <label>available</label>
     <div class='input-field'>
-        <input type='text' name='mail'>
+        <input type='checkbox' name='available'>
     </div>
-    {{#if Mails.length}}
-    <ul>
-        {{#each Mails}}
-        <li class='todo'>
-            <label>{{this}}</label>
-        </li>
-        {{/each}}
-    </ul>
-    {{/if}}
-    <button type='submit' formmethod="POST" formaction="/addInGroup" class='btn'>Add</button>
-    <button type='submit' formmethod="POST" formaction="/saveGroup" class='btn'>Create</button>
+    <label>price</label>
+    <div class='input-field'>
+        <input type='number' name='price'>
+    </div>
+    <label>categoryId</label>
+    <div class='input-field'>
+        <input type='text' name='categoryId'>
+    </div>
+    <label>description</label>
+    <div class='input-field'>
+        <input type='text' name='description'>
+    </div>
+    <label>barcode</label>
+    <div class='input-field'>
+        <input type='text' name='barcode'>
+    </div>
+    <label>store</label>
+    <div class='input-field'>
+        <input type='checkbox' name='store'>
+    </div>
+    <label>pickup</label>
+    <div class='input-field'>
+        <input type='checkbox' name='pickup'>
+    </div>
+    <label>delivery</label>
+    <div class='input-field'>
+        <input type='checkbox' name='delivery'>
+    </div>
+    <label>manufacturer_warranty</label>
+    <div class='input-field'>
+        <input type='checkbox' name='manufacturer_warranty'>
+    </div>
+    <label>min_quantity</label>
+    <div class='input-field'>
+        <input type='number' name='min_quantity'>
+    </div>
+    
+
+    
+    <button type='submit' formmethod="POST" formaction="/create" class='btn'>Create</button>
     
 </form>

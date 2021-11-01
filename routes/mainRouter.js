@@ -6,6 +6,7 @@ const User = require('../models/User')
 const enter = require('../modules/enter')
 const enterMiddle = require('../middleware/enter')
 const Category = require('../models/Category')
+const Product = require('../models/Product')
 
 router.get('/', enterMiddle, async (req, res) => {
     const { cookies } = req
@@ -47,9 +48,32 @@ router.post('/createGroup', (async (req,res)=>{
     await category.save()
     res.redirect('/')
 }))
+router.post('/create', (async (req,res)=>{
+    const product = new Product({
+        name: req.body.name,
+        available:req.body.available,
+        price: req.body.price,
+        categoryId: req.body.categoryId,
+        description: req.body.description,
+        barcode: req.body.barcode,
+        store: req.body.store,
+        pickup: req.body.pickup,
+        delivery: req.body.delivery,
+        manufacturer_warranty: req.body.manufacturer_warranty,
+        min_quantity: req.body.min_quantity,
+
+    })
+    await product.save()
+    res.redirect('/')
+}))
 router.get('/createGroup', ((req, res) => {
     res.render('createGroup', {
         title: "create group page",
+    })
+}))
+router.get('/create', ((req, res) => {
+    res.render('create', {
+        title: "create page",
     })
 }))
 router.get('/registration', ((req, res) => {
