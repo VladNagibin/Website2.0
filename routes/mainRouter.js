@@ -7,14 +7,14 @@ const enter = require('../modules/enter')
 const enterMiddle = require('../middleware/enter')
 const Category = require('../models/Category')
 const Product = require('../models/Product')
-
+const request = require('request')
 router.get('/', enterMiddle, async (req, res) => {
     const { cookies } = req
     products = await Product.find().lean()
     if ('UserName' in cookies) {
         res.render('index', {
-            title: "main page",
-            Username: cookies.UserName,
+            // title: "main page",
+            // Username: cookies.UserName,
             products
           
         })
@@ -50,6 +50,38 @@ router.post('/createGroup', (async (req,res)=>{
     await category.save()
     res.redirect('/')
 }))
+router.get('/getGroups', async (req,res)=>{
+    
+    href = "http://www.galacentre.ru/api/v2/sections/json/?key=5a1e6024f2310649679acb5885c282e4"
+    // var getCat = new XMLHttpRequest()
+    // getCat.open('GET',href,false)
+    // getCat.send()
+    // getCat.onload = function(){
+    //     console.log(getCat.response)
+    // }
+    // getCat.onerror = function(){
+    //     getCat.console.error()
+    // }
+    request(href,(err, res, body)=>{
+        if(err){
+            console.log(err)
+        }else{
+            var result = JSON.parse(body)
+            //console.log(data)
+            result.DATA.forEach(element => {
+                var gr = new Category({
+                    name:element.name,
+                    parentId:element.parent_id,
+                    Id:element.id
+                })
+                gr.save()
+                
+            });
+        }
+
+    })
+    res.redirect('/')
+})
 router.post('/create', (async (req,res)=>{
     const product = new Product({
         name: req.body.name,

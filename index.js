@@ -6,6 +6,7 @@ const app = express()
 const cookieParser = require('cookie-parser')
 const mainRouter = require('./routes/mainRouter')
 const hbs = handlebars.create()
+const Cookies = require('cookies')
 const PORT = process.env.PORT || 3000
 var conn='mongodb+srv://Vlad:123@cluster0.zy9vv.mongodb.net/Database'
 
@@ -16,6 +17,7 @@ app.use(cookieParser())
 app.use(express.urlencoded({extended:true}))
 app.use(express.static(path.join(__dirname,'public')))
 app.use(mainRouter)
+app.use(Cookies)
 async function start(){
     try{
       
