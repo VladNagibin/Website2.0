@@ -16,7 +16,7 @@ router.get('/', enterMiddle, async (req, res) => {
             // title: "main page",
             // Username: cookies.UserName,
             products
-          
+
         })
     }
     else {
@@ -41,51 +41,48 @@ router.get('/EnterInAccount', ((req, res) => {
 
 router.post('/enter', enter.logIn)
 
-router.post('/createGroup', (async (req,res)=>{
+router.post('/createGroup', (async (req, res) => {
     const category = new Category({
         name: req.body.name,
-        Id:req.body.id,
+        Id: req.body.id,
         parentId: req.body.parentId
     })
     await category.save()
     res.redirect('/')
 }))
-router.get('/getGroups', async (req,res)=>{
-    
-    href = "http://www.galacentre.ru/api/v2/sections/json/?key=5a1e6024f2310649679acb5885c282e4"
-    // var getCat = new XMLHttpRequest()
-    // getCat.open('GET',href,false)
-    // getCat.send()
-    // getCat.onload = function(){
-    //     console.log(getCat.response)
-    // }
-    // getCat.onerror = function(){
-    //     getCat.console.error()
-    // }
-    request(href,(err, res, body)=>{
-        if(err){
-            console.log(err)
-        }else{
-            var result = JSON.parse(body)
-            //console.log(data)
-            result.DATA.forEach(element => {
-                var gr = new Category({
-                    name:element.name,
-                    parentId:element.parent_id,
-                    Id:element.id
-                })
-                gr.save()
-                
-            });
-        }
+router.get('/getGroups', async (req, res) => {
 
+    href = "http://www.galacentre.ru/api/v2/sections/json/?key=5a1e6024f2310649679acb5885c282e4"
+    request(href, (err, res, body) => {
+        if (err) {
+            console.log(err)
+            //reject(err)
+
+        } else {
+            result = JSON.parse(body)
+            //resolve(result)
+            saveCategories(result.DATA)
+           
+        }
     })
     res.redirect('/')
+    
 })
-router.post('/create', (async (req,res)=>{
+async function saveCategories(Data){
+    for (let index = 0; index < Data.length; index++) {
+        const element = Data[index];
+        var gr = new Category({
+            name: element.name,
+            parentId: element.parent_id,
+            Id: element.id
+        })
+        gr.save()
+    }
+}
+router.post('/create', (async (req, res) => {
     const product = new Product({
         name: req.body.name,
-        available:true,
+        available: true,
         price: req.body.price,
         categoryId: req.body.categoryId,
         description: req.body.description,
@@ -122,7 +119,7 @@ router.post('/registration', (async (req, res) => {
         password: hashPassword,
         name: req.body.name,
         mail: req.body.mail,
-        isAdmin : !!req.body.isAdmin
+        isAdmin: !!req.body.isAdmin
     })
 
 
