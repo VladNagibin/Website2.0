@@ -62,13 +62,63 @@ router.get('/getGroups', async (req, res) => {
             result = JSON.parse(body)
             //resolve(result)
             saveCategories(result.DATA)
-           
+
         }
     })
     res.redirect('/')
-    
+
 })
-async function saveCategories(Data){
+router.post('/getSection', (req, res) => {
+    const { secId } = req.body
+    href = "http://www.galacentre.ru/api/v2/catalog/json/?section=" + secId + "&key=5a1e6024f2310649679acb5885c282e4"
+    request(href, async (err, res, body) => {
+        if (err) {
+            console.log(err)
+        } else {
+            result = JSON.parse(body)
+            //console.log(result.DATA.length)
+            for(let i = 0; i<result.DATA.length;i++){
+                await saveProduct(result.DATA[i])
+            }
+            
+        }
+    })
+    //console.log(secId)
+    res.redirect('/')
+})
+
+function saveProduct(data) {
+    return new Promise((resolve, reject) => {
+        let available
+        if (data.active = 'Y') {
+            available = true
+        } else {
+            available = false
+        }
+        try {
+            product = new Product({
+                api_id: data.id,
+                available: available,
+                name: data.name,
+                categoryId: data.section,
+                image: data.image,
+                images: data.images,
+                price: data.price_base,
+                min_quantity: data.min,
+                description: data.about,
+                barcode: data.barcode,
+                parameters: data.specifications,
+            })
+            product.save().then(doc=>{
+                resolve()
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+async function saveCategories(Data) {
     for (let index = 0; index < Data.length; index++) {
         const element = Data[index];
         var gr = new Category({

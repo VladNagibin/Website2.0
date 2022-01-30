@@ -4,6 +4,9 @@ const schema = new Schema({
         type: String,
         required:true
     }, 
+    api_id:{
+        type:String
+    },
     available:{
         type:Boolean,
         default:true
@@ -44,6 +47,12 @@ const schema = new Schema({
     },
     min_quantity:{
         type:Number
+    },
+    image:{
+        type:String
+    },
+    images:{
+        type:Array
     }
        
 })
