@@ -53,6 +53,9 @@ const schema = new Schema({
     },
     images:{
         type:Array
+    },
+    included:{
+        type:Array
     }
        
 })

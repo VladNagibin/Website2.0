@@ -17,13 +17,14 @@
         </label>
     </form> -->
 
-    {{#each categories}}
+    {{#each products}}
     <li class='todo'>
         <form>
             <label>
                 <a>{{name}}</a>
-                <button type='submit' formmethod="GET" formaction="/openCategory" class='btn'>категории</button>
-                <button type='submit' formmethod="GET" formaction="/openProducts" class='btn'>товары</button>
+                <a>{{price}}</a>
+                <a>{{description}}</a>
+                <button type='submit' formmethod="GET" formaction="/" class='btn'>домой</button>
                 <input type="hidden" value="{{Id}}" name="Id">
                 <input type="hidden" value="{{parentId}}" name="parentId">
             </label>

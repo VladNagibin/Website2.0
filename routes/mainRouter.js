@@ -9,23 +9,13 @@ const Category = require('../models/Category')
 const Product = require('../models/Product')
 const request = require('request')
 router.get('/', enterMiddle, async (req, res) => {
-    const { cookies } = req
-    products = await Product.find().lean()
-    if ('UserName' in cookies) {
-        res.render('index', {
-            // title: "main page",
-            // Username: cookies.UserName,
-            products
+    //const { cookies } = req
+    categories = await Category.find({ "parentId": '0' }).lean()
+    res.render('index', {
+        categories
 
-        })
-    }
-    else {
-        res.render('index', {
-            title: "main page",
-            Username: 'Not found',
-            products
-        })
-    }
+    })
+
 
 
 
@@ -36,9 +26,52 @@ router.get('/EnterInAccount', ((req, res) => {
     })
 }))
 
+router.get('/addIncluded',async (req,res)=>{
 
+})
+function addIncluded(id,parentIds = []){
+    return new Promise((async (resolve, reject) => {
+        parentIds.push(id)
+        categories = await Category.find({ "parentId": id }).lean()
+        if (categories.length = 0) {
+            products = await Product.find({'categoryId':id})
+            for(var i =0;i<products.length;i++){
+                products[i].included = parentsIds
+                await products[i].save()
+            }
+            resolve()
+        } else {
+            for(var i =0;i<categories.length;i++){
+                await addIncluded(categories[i].Id)
+            };
+        }
+    }))
+}
+router.get('/openCategory', (async (req, res) => {
+    const { Id, parentId } = req.query
+    categories = await Category.find({ "parentId": Id }).lean()
+    res.render('index', {
+        categories
 
+    })
+}))
+router.get('/openProducts', (async (req, res) => {
+    const { Id } = req.query
 
+}))
+function getProducts(id) {
+    return new Promise((resolve, reject) => {
+        categories = await Category.find({ "parentId": id }).lean()
+        if (categories.length = 0) {
+            products = await Product.find({'categoryId':id})
+            return products
+        } else {
+            categories.forEach(element => {
+                
+            });
+        }
+    })
+}
 router.post('/enter', enter.logIn)
 
 router.post('/createGroup', (async (req, res) => {
@@ -77,10 +110,10 @@ router.post('/getSection', (req, res) => {
         } else {
             result = JSON.parse(body)
             //console.log(result.DATA.length)
-            for(let i = 0; i<result.DATA.length;i++){
+            for (let i = 0; i < result.DATA.length; i++) {
                 await saveProduct(result.DATA[i])
             }
-            
+
         }
     })
     //console.log(secId)
@@ -109,7 +142,7 @@ function saveProduct(data) {
                 barcode: data.barcode,
                 parameters: data.specifications,
             })
-            product.save().then(doc=>{
+            product.save().then(doc => {
                 resolve()
             })
         } catch (e) {
