@@ -4,6 +4,7 @@ const Cookies = require('cookies')
 const bCrypt = require('bcrypt')
 const User = require('../models/User')
 const enter = require('../modules/enter')
+const api = require('../modules/api')
 const enterMiddle = require('../middleware/enter')
 const Category = require('../models/Category')
 const Product = require('../models/Product')
@@ -26,27 +27,12 @@ router.get('/EnterInAccount', ((req, res) => {
     })
 }))
 
-router.get('/addIncluded',async (req,res)=>{
+router.get('/addIncluded', async (req, res) => {
 
 })
-function addIncluded(id,parentIds = []){
-    return new Promise((async (resolve, reject) => {
-        parentIds.push(id)
-        categories = await Category.find({ "parentId": id }).lean()
-        if (categories.length = 0) {
-            products = await Product.find({'categoryId':id})
-            for(var i =0;i<products.length;i++){
-                products[i].included = parentsIds
-                await products[i].save()
-            }
-            resolve()
-        } else {
-            for(var i =0;i<categories.length;i++){
-                await addIncluded(categories[i].Id)
-            };
-        }
-    }))
-}
+
+
+
 router.get('/openCategory', (async (req, res) => {
     const { Id, parentId } = req.query
     categories = await Category.find({ "parentId": Id }).lean()
@@ -57,21 +43,25 @@ router.get('/openCategory', (async (req, res) => {
 }))
 router.get('/openProducts', (async (req, res) => {
     const { Id } = req.query
+    products = await api.getSection(Id)
+    res.render('products',{
+        products
+    })
 
 }))
-function getProducts(id) {
-    return new Promise((resolve, reject) => {
-        categories = await Category.find({ "parentId": id }).lean()
-        if (categories.length = 0) {
-            products = await Product.find({'categoryId':id})
-            return products
-        } else {
-            categories.forEach(element => {
-                
-            });
-        }
-    })
-}
+// function getProducts(id) {
+//     return new Promise((resolve, reject) => {
+//         categories = await Category.find({ "parentId": id }).lean()
+//         if (categories.length = 0) {
+//             products = await Product.find({'categoryId':id})
+//             return products
+//         } else {
+//             categories.forEach(element => {
+
+//             });
+//         }
+//     })
+// }
 router.post('/enter', enter.logIn)
 
 router.post('/createGroup', (async (req, res) => {
@@ -84,84 +74,20 @@ router.post('/createGroup', (async (req, res) => {
     res.redirect('/')
 }))
 router.get('/getGroups', async (req, res) => {
-
-    href = "http://www.galacentre.ru/api/v2/sections/json/?key=5a1e6024f2310649679acb5885c282e4"
-    request(href, (err, res, body) => {
-        if (err) {
-            console.log(err)
-            //reject(err)
-
-        } else {
-            result = JSON.parse(body)
-            //resolve(result)
-            saveCategories(result.DATA)
-
-        }
-    })
+    api.saveCategories()
     res.redirect('/')
 
 })
-router.post('/getSection', (req, res) => {
-    const { secId } = req.body
-    href = "http://www.galacentre.ru/api/v2/catalog/json/?section=" + secId + "&key=5a1e6024f2310649679acb5885c282e4"
-    request(href, async (err, res, body) => {
-        if (err) {
-            console.log(err)
-        } else {
-            result = JSON.parse(body)
-            //console.log(result.DATA.length)
-            for (let i = 0; i < result.DATA.length; i++) {
-                await saveProduct(result.DATA[i])
-            }
+// router.post('/getSection', (req, res) => {
+//     const { secId } = req.body
 
-        }
-    })
-    //console.log(secId)
-    res.redirect('/')
-})
+//     //console.log(secId)
+//     res.redirect('/')
+// })
 
-function saveProduct(data) {
-    return new Promise((resolve, reject) => {
-        let available
-        if (data.active = 'Y') {
-            available = true
-        } else {
-            available = false
-        }
-        try {
-            product = new Product({
-                api_id: data.id,
-                available: available,
-                name: data.name,
-                categoryId: data.section,
-                image: data.image,
-                images: data.images,
-                price: data.price_base,
-                min_quantity: data.min,
-                description: data.about,
-                barcode: data.barcode,
-                parameters: data.specifications,
-            })
-            product.save().then(doc => {
-                resolve()
-            })
-        } catch (e) {
-            reject(e)
-        }
-    })
-}
 
-async function saveCategories(Data) {
-    for (let index = 0; index < Data.length; index++) {
-        const element = Data[index];
-        var gr = new Category({
-            name: element.name,
-            parentId: element.parent_id,
-            Id: element.id
-        })
-        gr.save()
-    }
-}
+
+
 router.post('/create', (async (req, res) => {
     const product = new Product({
         name: req.body.name,
